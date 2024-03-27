@@ -2,7 +2,7 @@
   "name": "hack_with_india_hackthon",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "api/index.js",
   "type": "module",
   "proxy": "http://localhost:3000",
   "scripts": {
