@@ -5,6 +5,7 @@ import { ErrorMiddleware } from "./middlewares/error.js";
 import contactUsRouter from './route/contactUs.route.js'
 import blogRouter from './route/blog.route.js'
 import path from 'path'
+import express from 'express'
 const port  = process.env.PORT || 5000;
 
 app.use('/api/v1/user' , userRoute);
