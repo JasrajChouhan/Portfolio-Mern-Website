@@ -1,0 +1,11 @@
+
+.mce-content-body {
+  background-color: #ffffff; 
+  color: #333333; 
+}
+
+
+.mce-dark-mode .mce-content-body {
+  background-color: #333333;
+  color: #ffffff; 
+}
