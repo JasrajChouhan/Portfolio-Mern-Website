@@ -6,7 +6,21 @@ import contactUsRouter from './route/contactUs.route.js'
 import blogRouter from './route/blog.route.js'
 import path from 'path'
 import express from 'express'
+import cloudinary from  'cloudinary';
+import dotenv from 'dotenv'
+dotenv.config();
 const port  = process.env.PORT || 5000;
+
+
+
+
+
+          
+cloudinary.v2.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key:  process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env. CLOUDINARY_API_SECRET
+});
 
 app.use('/api/v1/user' , userRoute);
 app.use('/api/v1/contactus' , contactUsRouter)

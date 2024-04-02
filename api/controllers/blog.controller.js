@@ -1,6 +1,7 @@
 // allBlogs , postBlog , getOneBlog 
 import Blog from '../model/blog.model.js'
 import {catcheAsync} from '../middlewares/catchAsyncError.js'
+import cloudinary from 'cloudinary';
 import ErrorHandler from '../middlewares/error.js'
 
 export const allBlogs = catcheAsync(async (req , res , next) => {
@@ -35,13 +36,49 @@ export const postBlog = catcheAsync(async (req , res , next) => {
             'only admin is allowed to create or post the blog'
         ))
     }
+
+    if(!req.file && (!req.files || Object.keys(req.files).length === 0 ) ) {
+        return next(
+            'Please upload  an image for your blog'
+        )
+    }
+
+    const {image} = req.files ? req.files : {
+        image: req.file
+    }
+
+    const allowedFormats = [
+        'image/png',
+        'image/jpg',
+        'image/webp',
+    ]
+
+    if(!allowedFormats.includes(image.mimetype)){
+        return next(new  ErrorHandler(
+            "please enter png jpg or webp  format image file" , 400
+        ))
+    }
+
+    const cloudinaryResponse = await  cloudinary.uploader.upload(image.tempFilePath);
+
+    if(!cloudinaryResponse || cloudinaryResponse.error) {
+        return next(new  ErrorHandler(
+            "some error occured related to cloudinary || faild to upload to image" , 400
+        ))
+    }
     
     
     try {
         const post = await Blog.create({
             title : title,
-            content : content
+            content : content,
+            image : {
+                public_id :  cloudinaryResponse.public_id,
+                url : cloudinaryResponse.secure_url
+            }
         })
+
+        console.log(cloudinaryResponse);
 
         res.status(200).json({
             success : true,

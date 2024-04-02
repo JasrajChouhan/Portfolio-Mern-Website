@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import parse from 'html-react-parser';
 import { useToast } from '@chakra-ui/react';
 
+
 function BlogPost() {
   const [post, setPost] = useState(null);
   const { id } = useParams();
@@ -33,8 +34,12 @@ function BlogPost() {
     <div className="mx-10 mt-10">
       {post ? (
         <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden border dark:hover:border-blue-300 ">
+          
           <div className="px-6 py-4">
             <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+            <div className="image-div  flex justify-center items-center my-10 ">
+            <img src={post.image.url} alt="post's main image or thumbnail" width={600} height={100}  />
+          </div>
             <p className="text-gray-700 dark:text-gray-300">{parse(post.content)}</p>
           </div>
           <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">

@@ -18,9 +18,25 @@ function AllBlogs() {
   }
 
   useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.ctrlKey && event.key === 'k') {
+        event.preventDefault();
+        searchRef.current.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
     const fetchBlogs = async () => {
       try {
         const response = await axios.get('/api/v1/blog', { withCredentials: true });
+        console.log(response.data.allBlogs);
         setBlogs(response.data.allBlogs);
       } catch (error) {
         console.error('Error fetching blogs:', error);
@@ -35,22 +51,9 @@ function AllBlogs() {
     };
 
     fetchBlogs();
-  }, [toast]);
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && event.key === 'k') {
-        event.preventDefault();
-        searchRef.current.focus();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
   }, []);
+
+  
 
   const filteredBlogs = blogs.filter(blog => blog.title.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -80,24 +83,25 @@ function AllBlogs() {
           />
         </svg>
       </div>
-      <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {filteredBlogs.map(blog => (
-          <div key={blog._id} className="bg-white border dark:hover:border-blue-300 dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden transition duration-300 ease-in-out transform hover:scale-105">
-            <div className="px-6 py-4">
-              <h3 className="text-xl font-bold mb-2">{blog.title}</h3>
-              <p className="text-gray-700 dark:text-gray-300">{parse(blog.content).slice(0, 100)}</p>
-            </div>
-            <div className="px-6 py-4">
-              <Link
-                to={`/blog/${blog._id}`}
-                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
-              >
-                Read Blog
-              </Link>
-            </div>
-          </div>
-        ))}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  ">
+  {filteredBlogs.map(blog => (
+    <div key={blog._id} className=" border hover:border-gray-300 dark:hover:border-blue-300  overflow-hidden bg-white dark:bg-gray-800 rounded-lg shadow-2xl transition duration-300 ease-in-out transform hover:scale-105">
+      <img className="object-cover w-full h-48" src={blog.image.url} alt={blog.title} />
+      <div className="p-4">
+        <h3 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">{blog.title}</h3>
+        <p className="text-gray-700 dark:text-gray-300 mb-4">{parse(blog.content.substring(0, 100))}</p>
+        <Link
+          to={`/blog/${blog._id}`}
+          className="inline-block px-4 py-2 text-white bg-blue-500 dark:bg-blue-700 rounded hover:bg-blue-700 dark:hover:bg-blue-900 transition duration-300"
+        >
+          Read Blog
+        </Link>
       </div>
+    </div>
+  ))}
+</div>
+
+
     </div>
   );
 }

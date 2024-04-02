@@ -17,10 +17,7 @@ function Signin({ setIsSignUp }) {
   const { isAuthorized, setIsAuthorized } = useContext(UserContext);
   const navigate = useNavigate();
 
-  if (isAuthorized) {
-    navigate('/');
-    return null;
-  }
+ 
 
 
   const handleSubmit = async (e) => {
@@ -54,6 +51,10 @@ function Signin({ setIsSignUp }) {
     }
   };
 
+  if(isAuthorized){
+    return navigate('/')
+  }
+
 
 
   return (
@@ -70,8 +71,9 @@ function Signin({ setIsSignUp }) {
               <Heading fontSize={'2xl'} textAlign="center" className='text-gray-700' >Sign in to your account</Heading>
               <Text textAlign="center" fontSize="md" color={color}>
                 Or{' '}
+              
                 <Link to="/signup" className="text-blue-400 font-normal hover:text-blue-500 transiti duration-300 ease-in-out">
-                  sign up
+                  sign up!
                 </Link>
                 
               </Text>

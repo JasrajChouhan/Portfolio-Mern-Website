@@ -7,6 +7,8 @@ import {useNavigate} from 'react-router-dom'
 export default function CreateBlog() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [image , setImage] = useState(null);
+  const [imageUrl , setImageUrl] = useState("");
   const toast = useToast();
 
   const { user, setUser, isAuthorized, setIsAuthorized } = useContext(UserContext)
@@ -19,11 +21,26 @@ export default function CreateBlog() {
     )
   }
 
+  const handleFileChange = (e) => {
+    const image = e.target.files[0];
+    setImage(image);
+    setImageUrl(URL.createObjectURL(image));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("image", image);
+
     try {
-      await axios.post('/api/v1/blog', { title, content }, { withCredentials: true });
+      await axios.post('/api/v1/blog', formData, { withCredentials: true  , 
+        headers : {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       toast({
         title: 'Blog post created successfully!',
         status: 'success',
@@ -45,15 +62,15 @@ export default function CreateBlog() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center h-screen mt-40">
       <form className="w-full mx-10 " onSubmit={handleSubmit}>
         <div className="flex flex-wrap -mx-3 mb-6">
           <div className="w-full px-3 mb-6">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="title">
+            <label className="dark:text-white block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="title">
               Title
             </label>
             <input
-              className="appearance-none block w-full bg-gray-200 text-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+              className="appearance-none block w-full bg-gray-200 text-gray-700 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white shadow-lg border hover:border-gray-200 dark:border-blue-300  "
               id="title"
               type="text"
               placeholder="Enter title"
@@ -62,8 +79,17 @@ export default function CreateBlog() {
               required
             />
           </div>
-          <div className="w-full px-3">
-            <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="content">
+          <div className="w-full px-3 mb-6">
+            <label className="dark:text-white block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="image">
+              Blog thumbnail
+            </label>
+            <div className="image-div">
+              <input type='file' accept='.png , .jpg , .webp' onChange={handleFileChange} />
+              {imageUrl && <img src={imageUrl} alt="Thumbnail Preview" className="mt-2" style={{ maxWidth: '100%', maxHeight: '200px' }} />}
+            </div>
+          </div>
+          <div className="w-full px-3 my-10">
+            <label className="dark:text-white block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="content">
               Content
             </label>
             <Editor

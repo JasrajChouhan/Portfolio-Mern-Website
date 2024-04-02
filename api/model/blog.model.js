@@ -11,7 +11,20 @@ const blogSchema = new mongoose.Schema({
         minLength: [100, "Minimum content should contain 100 characters"],
         maxLength: [50000, "Maximum length of content is 50000 characters"],
         required: true
+    },
+    image : {
+        public_id : {
+            type : String,
+            required : true 
+
+        },
+        url: {
+            type : String,
+            required : true,
+        }
+        
     }
+
 }, { timestamps: true });
 
 const Blog = mongoose.model('Blog', blogSchema);
